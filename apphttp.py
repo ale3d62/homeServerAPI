@@ -1,8 +1,6 @@
-from gc import collect
 import json
 import requests
-import os
-from bottle import post, request, get, run, app, response
+from bottle import post, request, run, app
 from bottle_cors_plugin import cors_plugin
 import socket
 import math
@@ -35,6 +33,7 @@ def getSystemIp():
 #******************************
 
 #TO DO LIST
+#Returns the content of todoList.json
 @post('/getTodoList')
 def getTodoList():
     with open("todoList.json", 'r') as f:
@@ -43,6 +42,7 @@ def getTodoList():
     return json.dumps(jsonData)
 
 
+#Receives a to do list item and deletes it from the todoList.json 
 @post('/deleteTodoListItem')
 def deleteTodoListItem():
     data = request.json
@@ -58,6 +58,9 @@ def deleteTodoListItem():
 
         f.close()
 
+
+#Receives a to do list item and an edited version of that item.
+#Replaces the content of the item at todoList.json with the new version
 @post('/editTodoListItem')
 def editTodoListItem():
     data = request.json
@@ -76,6 +79,8 @@ def editTodoListItem():
 
         f.close()
 
+
+#Receives a to do list item and appends it into todoList.json
 @post('/addTodoListItem')
 def addTodoListItem():
     data = request.json
@@ -94,7 +99,8 @@ def addTodoListItem():
 
 
 #WALLPAPERS
-#Returns a list with the wallpapers names
+#Receives a Wallhaven username and a collectionId corresponding to a collection of that user
+#Returns a list with the wallpapers filenames of that collection
 @post('/getWallpapers')
 def getWallpapers():
     data = request.json
