@@ -13,6 +13,12 @@ serverPort = 8888
 receiverPort = 8889
 
 
+#Set the working directory to the directory of the script
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
+
 #Confugure the server to prevent cors policy errors
 app = app()
 app.install(cors_plugin('*'))
@@ -149,9 +155,4 @@ def getWallpapers():
 
 
 if __name__ == '__main__':
-    #Set the working directory to the directory of the script
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    os.chdir(dname)
-
     run(host = getSystemIp(), port = serverPort, debug = True)
