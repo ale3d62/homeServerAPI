@@ -4,7 +4,7 @@ from bottle import post, request, run, app
 from bottle_cors_plugin import cors_plugin
 import socket
 import math
-
+import os
 
 
 #----EDITABLE PARAMETERS----
@@ -149,4 +149,9 @@ def getWallpapers():
 
 
 if __name__ == '__main__':
+    #Set the working directory to the directory of the script
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+
     run(host = getSystemIp(), port = serverPort, debug = True)
