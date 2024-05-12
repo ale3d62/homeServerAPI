@@ -34,11 +34,29 @@ def getSystemIp():
     return ipAddress
 
 
+#Returs a list of the names of the available devices to send
+def obtainAvailableDevices(addr):
+    deviceList = []
+    f = open("receiverDevices.json", 'r')
+    devices = json.load(f)
+    f.close()
+    print("getting devices")
+    for device in devices:
+        deviceAddr = devices[device]
+        if(deviceAddr != addr):
+            pingResponse = os.system("ping -W 4 -n 2 " + deviceAddr) #-n: number of pings
+            if pingResponse == 0:
+                deviceList.append(device)
+    print("fiished")
+    return deviceList
+
+
+
 #******************************
 #---------HTTP METHODS---------
 #******************************
 
-#TO DO LIST
+#---------TO DO LIST-----------
 #Returns the content of todoList.json
 @post('/getTodoList')
 def getTodoList():
@@ -104,7 +122,7 @@ def addTodoListItem():
 
 
 
-#WALLPAPERS
+#-----------WALLPAPERS----------
 #Receives a Wallhaven username and a collectionId corresponding to a collection of that user
 #Returns a list with the wallpapers filenames of that collection
 @post('/getWallpapers')
@@ -150,6 +168,33 @@ def getWallpapers():
             wallNames.append(wallName)
 
     return json.dumps({"wallpaperNames": wallNames})
+
+
+
+#-------------SEND YOUTUBE TO DEVICE--------------
+#Get devices available for receiveing the video
+@post('/getAvailableDevices')
+def getAvailableDevices():
+    senderAddr = str(request.environ.get('REMOTE_ADDR'))
+    availableDevicesList = obtainAvailableDevices(senderAddr)
+    print(availableDevicesList)
+    return json.dumps({"availableDevices": availableDevicesList})
+
+
+#Send video to device
+@post('/playVideo')
+def playVideo():
+    data = request.json
+    deviceName = data['deviceName']
+    videoUrl = data['videoUrl']
+    timeStamp = data['timeStamp']
+
+    f = open("receiverDevices.json", 'r')
+    devices = json.load(f)
+    f.close()
+
+    deviceIp = devices[deviceName]
+    requests.post("http://"+deviceIp+":"+str(receiverPort)+"/playVideo", json={"videoUrl":videoUrl, "timeStamp":timeStamp})
 
 
 
