@@ -35,19 +35,17 @@ def getSystemIp():
 
 
 #Returs a list of the names of the available devices to send
-def obtainAvailableDevices(addr):
+def obtainAvailableDevices(clientDevice):
     deviceList = []
     f = open("receiverDevices.json", 'r')
     devices = json.load(f)
     f.close()
-    print("getting devices")
     for device in devices:
         deviceAddr = devices[device]
-        if(deviceAddr != addr):
+        if(device != clientDevice):
             pingResponse = os.system("ping -W 4 -n 2 " + deviceAddr) #-n: number of pings
             if pingResponse == 0:
                 deviceList.append(device)
-    print("fiished")
     return deviceList
 
 
@@ -175,9 +173,8 @@ def getWallpapers():
 #Get devices available for receiveing the video
 @post('/getAvailableDevices')
 def getAvailableDevices():
-    senderAddr = str(request.environ.get('REMOTE_ADDR'))
-    availableDevicesList = obtainAvailableDevices(senderAddr)
-    print(availableDevicesList)
+    clientDevice = str(request.environ.get('REMOTE_ADDR'))
+    availableDevicesList = obtainAvailableDevices(clientDevice)
     return json.dumps({"availableDevices": availableDevicesList})
 
 
