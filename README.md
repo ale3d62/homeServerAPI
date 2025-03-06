@@ -2,6 +2,7 @@
 ### Depencencies:
 - [bottle v0.12.25](https://pypi.org/project/bottle/0.12.25/)
 - [Requests v2.31.0](https://pypi.org/project/requests/2.31.0/)
+- [bottle-cors-plugin](https://pypi.org/project/bottle-cors-plugin/)
 
 ## Functionalities
 ### To do list
